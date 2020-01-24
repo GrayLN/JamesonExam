@@ -1,0 +1,10 @@
+.jameson {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  height: 800px;
+}
+#instructions {
+font-size: 30px;
+}

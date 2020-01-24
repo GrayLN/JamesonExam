@@ -1,0 +1,614 @@
+
+<!DOCTYPE html>
+
+
+
+
+<html>
+
+
+<head>
+ <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Gamer's Den</title>
+  </head>
+  <body>
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+      <a class="navbar-brand" href="#"> Navigation</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#collapsibleNavbar"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- All the different pages in my website are referenced and can be called by selecting on the navigation bar. As of now they are all differnet glitch projects until I learn to keep the different pages in different html files.-->
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html"
+              >Home</a
+            >
+          </li>
+           <li class="nav-item">
+            <a class="nav-link" href="brick.html"
+              >Play</a
+            >
+             <li class="nav-item">
+            <a class="nav-link" href="log-in.html"
+              >Log-in</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://jva.schools.smcdsb.on.ca/"
+              >My School</a
+            >
+          </li>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <container> </container>
+
+
+<body>
+
+
+
+
+
+
+<canvas id="myCanvas" width="700" height="700"></canvas>
+
+
+
+
+
+
+
+<script>
+
+
+   var canvas = document.getElementById("myCanvas");
+
+
+   var ctx = canvas.getContext("2d");
+
+
+   var ballRadius = 6;
+
+
+   var x = canvas.width/2;
+
+
+   var y = canvas.height-30;
+
+
+   var dx = 2;
+
+
+   var dy = -2;
+
+
+   var paddleHeight = 10;
+
+
+   var paddleWidth = 100;
+
+
+   var paddleX = (canvas.width-paddleWidth)/2;
+
+
+   var rightPressed = false;
+
+
+   var leftPressed = false;
+
+
+   var brickRowCount = 8;
+
+
+   var brickColumnCount = 11;
+
+
+   var brickWidth = 75;
+
+
+   var brickHeight = 25;
+
+
+   var brickPadding = 10;
+
+
+   var brickOffsetTop = 30;
+
+
+   var brickOffsetLeft = 30;
+
+
+   var score = 0;
+
+
+   var lives = 4;
+
+
+
+
+
+
+
+   var bricks = [];
+
+
+   for(var c=0; c<brickColumnCount; c++) {
+
+
+       bricks[c] = [];
+
+
+       for(var r=0; r<brickRowCount; r++) {
+
+
+           bricks[c][r] = { x: 0, y: 0, status: 1 };
+
+
+       }
+
+
+   }
+
+
+
+
+
+
+
+   document.addEventListener("keydown", keyDownHandler, false);
+
+
+   document.addEventListener("keyup", keyUpHandler, false);
+
+
+   document.addEventListener("mousemove", mouseMoveHandler, false);
+
+
+
+
+
+
+
+   function keyDownHandler(e) {
+
+
+       if(e.keyCode == 39) {
+
+
+           rightPressed = true;
+
+
+       }
+
+
+       else if(e.keyCode == 37) {
+
+
+           leftPressed = true;
+
+
+       }
+
+
+   }
+
+
+   function keyUpHandler(e) {
+
+
+       if(e.keyCode == 39) {
+
+
+           rightPressed = false;
+
+
+       }
+
+
+       else if(e.keyCode == 37) {
+
+
+           leftPressed = false;
+
+
+       }
+
+
+   }
+
+
+   function mouseMoveHandler(e) {
+
+
+       var relativeX = e.clientX - canvas.offsetLeft;
+
+
+       if(relativeX > 0 && relativeX < canvas.width) {
+
+
+           paddleX = relativeX - paddleWidth/2;
+
+
+       }
+
+
+   }
+
+
+   function collisionDetection() {
+
+
+       for(var c=0; c<brickColumnCount; c++) {
+
+
+           for(var r=0; r<brickRowCount; r++) {
+
+
+               var b = bricks[c][r];
+
+
+               if(b.status == 1) {
+
+
+                   if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+
+
+                       dy = -dy;
+
+
+                       b.status = 0;
+
+
+                       score++;
+
+
+                       if(score == brickRowCount*brickColumnCount) {
+
+
+                           alert("YOU WIN, CONGRATULATIONS COMRADE!");
+
+
+                           document.location.reload();
+
+
+                       }
+
+
+                   }
+
+
+               }
+
+
+           }
+
+
+       }
+
+
+   }
+
+
+
+
+
+
+
+   function drawBall() {
+
+
+       ctx.beginPath();
+
+
+       ctx.arc(x, y, ballRadius, 0, Math.PI*5);
+
+
+       ctx.fillStyle = "#FAEF05 ";
+
+
+       ctx.fill();
+
+
+       ctx.closePath();
+
+
+   }
+
+
+   function drawPaddle() {
+
+
+       ctx.beginPath();
+
+
+       ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+
+
+       ctx.fillStyle = "#FA0505";
+
+
+       ctx.fill();
+
+
+       ctx.closePath();
+
+
+   }
+
+
+   function drawBricks() {
+
+
+       for(var c=0; c<brickColumnCount; c++) {
+
+
+           for(var r=0; r<brickRowCount; r++) {
+
+
+               if(bricks[c][r].status == 1) {
+
+
+                   var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
+
+
+                   var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
+
+
+                   bricks[c][r].x = brickX;
+
+
+                   bricks[c][r].y = brickY;
+
+
+                   ctx.beginPath();
+
+
+                   ctx.rect(brickX, brickY, brickWidth, brickHeight);
+
+
+                   ctx.fillStyle = "#055FFA";
+
+
+                   ctx.fill();
+
+
+                   ctx.closePath();
+
+
+               }
+
+
+           }
+
+
+       }
+
+
+   }
+
+
+   function drawScore() {
+
+
+       ctx.font = "16px Arial";
+
+
+       ctx.fillStyle = "#0095DD";
+
+
+       ctx.fillText("Score: "+score, 8, 20);
+
+
+   }
+
+
+   function drawLives() {
+
+
+       ctx.font = "16px Arial";
+
+
+       ctx.fillStyle = "#0095DD";
+
+
+       ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+
+
+   }
+
+
+
+
+
+
+
+   function draw() {
+
+
+       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+       drawBricks();
+
+
+       drawBall();
+
+
+       drawPaddle();
+
+
+       drawScore();
+
+
+       drawLives();
+
+
+       collisionDetection();
+
+
+
+
+
+
+
+       if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+
+
+           dx = -dx;
+
+
+       }
+
+
+       if(y + dy < ballRadius) {
+
+
+           dy = -dy;
+
+
+       }
+
+
+       else if(y + dy > canvas.height-ballRadius) {
+
+
+           if(x > paddleX && x < paddleX + paddleWidth) {
+
+
+               dy = -dy;
+
+
+           }
+
+
+           else {
+
+
+               lives--;
+
+
+               if(!lives) {
+
+
+                   alert("YOU'VE LOST!");
+
+
+                   document.location.reload();
+
+
+               }
+
+
+               else {
+
+
+                   x = canvas.width/2;
+
+
+                   y = canvas.height-30;
+
+
+                   dx = 3;
+
+
+                   dy = -3;
+
+
+                   paddleX = (canvas.width-paddleWidth)/2;
+
+
+               }
+
+
+           }
+
+
+       }
+
+
+
+
+
+
+
+       if(rightPressed && paddleX < canvas.width-paddleWidth) {
+
+
+           paddleX += 7;
+
+
+       }
+
+
+       else if(leftPressed && paddleX > 0) {
+
+
+           paddleX -= 7;
+
+
+       }
+
+
+
+
+
+
+
+       x += dx;
+
+
+       y += dy;
+
+
+       requestAnimationFrame(draw);
+
+
+   }
+
+
+
+
+
+
+
+   draw();
+
+
+</script>
+
+
+
+
+
+
+
+</body>
+
+
+</html>
+
+
+
+
+
+
+
+
